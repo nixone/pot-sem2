@@ -26,6 +26,13 @@ namespace pot_sem2
         public MainWindow()
         {
             InitializeComponent();
+            Visualiser.OnTileSelected += (x, y) => 
+            {
+                if (client != null)
+                {
+                    client.Select(x, y);
+                }
+            };
         }
 
         private void ServerButtonClick(object sender, RoutedEventArgs e)
@@ -71,9 +78,18 @@ namespace pot_sem2
             client.OnNewState += (state, player) => {
                 Visualiser.Dispatcher.Invoke(() => {
                     Visualiser.SetState(state);
+                    FinishTurnButton.IsEnabled = player != Player.NONE && state.PlayerOnTurn == player;
                 });
             };
             client.Start();
+        }
+
+        private void FinishTurnClick(object sender, RoutedEventArgs e)
+        {
+            if (client != null)
+            {
+                client.FinishTurn();
+            }
         }
     }
 }

@@ -24,6 +24,8 @@ namespace pot_sem2
         private String address;
         private int port;
         private Boolean running = false;
+        private int clientIndex;
+        private IGameService service = null;
 
         public GameClient(String name, String address, int port)
         {
@@ -53,6 +55,24 @@ namespace pot_sem2
             thread.Join();
         }
 
+        public void Select(int x, int y)
+        {
+            if (!running)
+            {
+                return;
+            }
+            service.Select(x, y, clientIndex);
+        }
+
+        public void FinishTurn()
+        {
+            if (!running)
+            {
+                return;
+            }
+            service.FinishTurn(clientIndex);
+        }
+
         public void Run()
         {
             running = true;
@@ -61,9 +81,9 @@ namespace pot_sem2
             {
                 using (var channelFactory = new ChannelFactory<IGameService>("GameService", new EndpointAddress("net.tcp://" + address + ":" + port + "/game")))
                 {
-                    IGameService service = channelFactory.CreateChannel();
+                    service = channelFactory.CreateChannel();
 
-                    int clientIndex = service.ObtainClientIndex(name);
+                    clientIndex = service.ObtainClientIndex(name);
 
                     if (OnConnected != null)
                     {
@@ -73,15 +93,7 @@ namespace pot_sem2
                     while (running)
                     {
                         GameState state = service.GetCurrentState();
-                        Player player = Player.NONE;
-                        if (service.IsWhitePlayer(clientIndex))
-                        {
-                            player = Player.WHITE;
-                        }
-                        else if (service.IsBlackPlayer(clientIndex))
-                        {
-                            player = Player.BLACK;
-                        }
+                        Player player = service.GetPlayer(clientIndex);
 
                         if (OnNewState != null)
                         {
@@ -95,11 +107,13 @@ namespace pot_sem2
             {
             }
 
+            service = null;
+            running = false;
+
             if (OnDisconnected != null)
             {
                 OnDisconnected();
             }
-            running = false;
         }
     }
 }

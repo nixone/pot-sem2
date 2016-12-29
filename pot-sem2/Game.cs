@@ -39,6 +39,9 @@ namespace pot_sem2
 
         [DataMember]
         public Figure Figure = Figure.NONE;
+
+        [DataMember]
+        public Boolean Selected = false;
     }
 
     [DataContract]
@@ -46,6 +49,9 @@ namespace pot_sem2
     {
         [DataMember]
         public List<Field> _board = new List<Field>();
+
+        [DataMember]
+        public Player PlayerOnTurn = Player.NONE;
 
         public GameState()
         {
@@ -76,14 +82,31 @@ namespace pot_sem2
     {
         private Random random = new Random();
 
+        private GameState state = new GameState();
+
         public GameState GetCurrentState()
         {
-            GameState result = new GameState();
+            state = new GameState();
             int x = random.Next(8);
             int y = random.Next(8);
-            result[x,y].Player = Player.WHITE;
-            result[x,y].Figure = Figure.MAN;
-            return result;
+            state[x, y].Player = Player.WHITE;
+            state[x, y].Figure = Figure.MAN;
+            state[x, y].Selected = true;
+            state.PlayerOnTurn = random.Next(2) == 0 ? Player.WHITE : Player.BLACK;
+            return state;
+        }
+
+        public void Select(int x, int y, Player player)
+        {
+            // TODO
+            Console.WriteLine("TODO Selecting in game!");
+            state[x, y].Selected = true;
+        }
+
+        public void FinishTurn(Player player)
+        {
+            // TODO
+            Console.WriteLine("TODO Finishing turn in game!");
         }
     }
 }

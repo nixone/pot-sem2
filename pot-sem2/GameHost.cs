@@ -19,7 +19,6 @@ namespace pot_sem2
         private String address;
         private int port;
         private Thread thread;
-        private Game game;
         private Boolean running = false;
         private GameService gameService;
 

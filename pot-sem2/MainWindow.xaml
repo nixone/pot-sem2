@@ -36,6 +36,9 @@
             <TextBlock> Status:</TextBlock>
             <TextBlock Name="ClientStatus"></TextBlock>
         </WrapPanel>
+        <WrapPanel Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Button Name="FinishTurnButton" IsEnabled="False" Click="FinishTurnClick">Finish turn</Button>
+        </WrapPanel>
         <local:GameStateVisualiser Grid.Row="2" Grid.Column="0"  x:Name="Visualiser"  />
     </Grid>
 </Window>

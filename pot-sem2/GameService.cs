@@ -17,10 +17,13 @@ namespace pot_sem2
         int ObtainClientIndex(String name);
 
         [OperationContract]
-        Boolean IsWhitePlayer(int clientIndex);
+        Player GetPlayer(int clientIndex);
 
         [OperationContract]
-        Boolean IsBlackPlayer(int clientIndex);
+        void Select(int x, int y, int clientIndex);
+
+        [OperationContract]
+        void FinishTurn(int clientIndex);
     }
 
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
@@ -42,20 +45,51 @@ namespace pot_sem2
             return game.GetCurrentState();
         }
 
-        public Boolean IsWhitePlayer(int clientIndex)
+        public Player GetPlayer(int clientIndex)
         {
-            return clientIndex == 0 && nextClientIndex > 2;
-        }
-
-        public Boolean IsBlackPlayer(int clientIndex)
-        {
-            return clientIndex == 1 && nextClientIndex > 2;
+            if (clientIndex == 0)
+            {
+                return Player.WHITE;
+            }
+            if (clientIndex == 1)
+            {
+                return Player.BLACK;
+            }
+            return Player.NONE;
         }
 
         public int ObtainClientIndex(String clientName)
         {
             clientNames[nextClientIndex] = clientName;
             return nextClientIndex++;
+        }
+
+        public void Select(int x, int y, int clientIndex)
+        {
+            if (game == null)
+            {
+                return;
+            }
+            Player player = GetPlayer(clientIndex);
+            if (player == Player.NONE)
+            {
+                return;
+            }
+            game.Select(x, y, player);
+        }
+
+        public void FinishTurn(int clientIndex)
+        {
+            if (game == null)
+            {
+                return;
+            }
+            Player player = GetPlayer(clientIndex);
+            if (player == Player.NONE)
+            {
+                return;
+            }
+            game.FinishTurn(player);
         }
     }
 }
