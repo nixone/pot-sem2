@@ -13,19 +13,30 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <WrapPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
-            <TextBlock>IP: </TextBlock>
-            <TextBox>localhost</TextBox>
+            <TextBlock>Server --- </TextBlock>
             <TextBlock> Port: </TextBlock>
-            <TextBox>8123</TextBox>
-            <Button>Connect</Button>
-            <Button>Host</Button>
-            <TextBlock>Status: </TextBlock>
-            <TextBlock>Waiting for your action</TextBlock>
+            <TextBox Name="ServerPort">8123</TextBox>
+            <Button Click="ServerButtonClick">Host</Button>
+            <TextBlock> Status: </TextBlock>
+            <TextBlock Name="ServerStatus"></TextBlock>
         </WrapPanel>
-        <local:GameStateVisualiser Grid.Row="1" Grid.Column="0"  x:Name="Visualiser"  />
-        <Button Grid.Row="1" Grid.Column="1" Click="Refresh_Click">Dont click me</Button>
+        <WrapPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+            <TextBlock>Client --- </TextBlock>
+            <TextBlock>Name: </TextBlock>
+            <TextBox Name="ClientName">name</TextBox>
+            <TextBlock>Address:</TextBlock>
+            <TextBox Name="ClientAddress">localhost</TextBox>
+            <TextBlock> Port:</TextBlock>
+            <TextBox Name="ClientPort">8123</TextBox>
+            <Button Click="ClientButtonClick">Connect</Button>
+            <TextBlock> Status:</TextBlock>
+            <TextBlock Name="ClientStatus"></TextBlock>
+        </WrapPanel>
+        <local:GameStateVisualiser Grid.Row="2" Grid.Column="0"  x:Name="Visualiser"  />
+        <Button Grid.Row="2" Grid.Column="1" Click="Refresh_Click">Dont click me</Button>
     </Grid>
 </Window>

@@ -71,8 +71,8 @@ namespace pot_sem2
         }
     }
 
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
-    public class Game : IGameService
+    
+    public class Game
     {
         private Random random = new Random();
 

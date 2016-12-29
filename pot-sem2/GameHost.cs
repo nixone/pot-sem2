@@ -10,18 +10,26 @@ namespace pot_sem2
 {
     public class GameHost
     {
+        public delegate void StartedHandler();
+        public delegate void StoppedHandler();
+
+        public event StartedHandler OnStarted;
+        public event StoppedHandler OnStopped;
+
         private String address;
         private int port;
         private Thread thread;
         private Game game;
         private Boolean running = false;
+        private GameService gameService;
 
-        public GameHost(Game game, String address, int port)
+        public GameHost(String address, int port)
         {
             this.address = address;
             this.port = port;
-            this.game = game;
             thread = new Thread(Run);
+            thread.IsBackground = true;
+            gameService = new GameService();
         }
 
         public void Start()
@@ -32,15 +40,20 @@ namespace pot_sem2
         public void Stop()
         {
             running = false;
+            thread.Join();
         }
 
         public void Run()
         {
             running = true;
-            ServiceHost host = new ServiceHost(game, new Uri[] { new Uri("net.tcp://"+address+":"+port+"/game") });
+            ServiceHost host = new ServiceHost(gameService, new Uri[] { new Uri("net.tcp://"+address+":"+port+"/game") });
             try
             {
                 host.Open();
+                if (OnStarted != null)
+                {
+                    OnStarted();
+                }
                 Console.WriteLine("Host running");
                 while (running)
                 {
@@ -53,6 +66,10 @@ namespace pot_sem2
             {
                 Console.WriteLine("There was some problem! {0}", e.Message);
                 host.Abort();
+            }
+            if (OnStopped != null)
+            {
+                OnStopped();
             }
             running = false;
         }

@@ -20,12 +20,54 @@ namespace pot_sem2
     /// </summary>
     public partial class MainWindow : Window
     {
+        private GameHost host;
+        private GameClient client;
+
         public MainWindow()
         {
             InitializeComponent();
-            GameHost host = new pot_sem2.GameHost(new pot_sem2.Game(), "localhost", 8123);
-            host.Start();
-            GameClient client = new GameClient("localhost", 8123);
+        }
+
+        private void ServerButtonClick(object sender, RoutedEventArgs e)
+        {
+            if (host == null)
+            {
+                host = new pot_sem2.GameHost("localhost", int.Parse(ServerPort.Text));
+                host.OnStarted += () =>
+                {
+                    ServerStatus.Dispatcher.Invoke(() =>
+                    {
+                        ServerStatus.Text = "Running";
+                    });
+                };
+                host.OnStopped += () =>
+                {
+                    ServerStatus.Dispatcher.Invoke(() =>
+                    {
+                        ServerStatus.Text = "Stopped";
+                    });
+                };
+                host.Start();
+            }
+        }
+
+        private void ClientButtonClick(object sender, RoutedEventArgs e)
+        {
+            if (client != null)
+            {
+                client.Stop();
+            }
+            client = new GameClient(ClientName.Text, ClientAddress.Text, int.Parse(ClientPort.Text));
+            client.OnConnected += () => {
+                ClientStatus.Dispatcher.Invoke(() => {
+                    ClientStatus.Text = "Connected";
+                });
+            };
+            client.OnDisconnected += () => {
+                ClientStatus.Dispatcher.Invoke(() => {
+                    ClientStatus.Text = "Disconnected";
+                });
+            };
             client.Start();
         }
 

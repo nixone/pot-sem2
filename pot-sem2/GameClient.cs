@@ -12,7 +12,7 @@ namespace pot_sem2
     {
         public delegate void ConnectedHandler();
         public delegate void DisconnectedHandler();
-        public delegate void NewStateHandler(GameState state);
+        public delegate void NewStateHandler(GameState state, Player player);
 
         public event ConnectedHandler OnConnected;
         public event DisconnectedHandler OnDisconnected;
@@ -20,57 +20,84 @@ namespace pot_sem2
 
         private Thread thread;
 
+        private String name;
         private String address;
         private int port;
         private Boolean running = false;
 
-        public GameClient(String address, int port)
+        public GameClient(String name, String address, int port)
         {
+            this.name = name;
             this.address = address;
             this.port = port;
             this.thread = new Thread(Run);
+            thread.IsBackground = true;
         }
 
         public void Start()
         {
+            if (running)
+            {
+                return;
+            }
             thread.Start();
         }
 
         public void Stop()
         {
+            if (!running)
+            {
+                return;
+            }
             running = false;
+            thread.Join();
         }
 
         public void Run()
         {
             running = true;
 
-            Thread.Sleep(1000);
-
-            Console.WriteLine("Client connecting");
-            using (var channelFactory = new ChannelFactory<IGameService>("GameService", new EndpointAddress("net.tcp://"+address+":"+port+"/game")))
+            try
             {
-                IGameService service = channelFactory.CreateChannel();
-
-                if (OnConnected != null)
+                using (var channelFactory = new ChannelFactory<IGameService>("GameService", new EndpointAddress("net.tcp://" + address + ":" + port + "/game")))
                 {
-                    OnConnected();
-                }
+                    IGameService service = channelFactory.CreateChannel();
 
-                while (running)
-                {
-                    GameState state = service.GetCurrentState();
-                    if (OnNewState != null)
+                    int clientIndex = service.ObtainClientIndex(name);
+
+                    if (OnConnected != null)
                     {
-                        OnNewState(state);
+                        OnConnected();
                     }
-                    Thread.Sleep(250);
-                }
 
-                if (OnDisconnected != null)
-                {
-                    OnDisconnected();
+                    while (running)
+                    {
+                        GameState state = service.GetCurrentState();
+                        Player player = Player.NONE;
+                        if (service.IsWhitePlayer(clientIndex))
+                        {
+                            player = Player.WHITE;
+                        }
+                        else if (service.IsBlackPlayer(clientIndex))
+                        {
+                            player = Player.BLACK;
+                        }
+
+                        if (OnNewState != null)
+                        {
+                            OnNewState(state, player);
+                        }
+                        Thread.Sleep(500);
+                    }
                 }
+            }
+            catch
+            {
+            }
+
+            if (OnDisconnected != null)
+            {
+                OnDisconnected();
             }
             running = false;
         }
