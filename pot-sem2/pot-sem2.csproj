@@ -66,8 +66,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Game.cs" />
-    <Compile Include="SampleService.cs" />
-    <Compile Include="WCFPrototype.cs" />
+    <Compile Include="GameClient.cs" />
+    <Compile Include="GameHost.cs" />
+    <Compile Include="GameService.cs" />
     <Compile Include="GameStateVisualiser.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

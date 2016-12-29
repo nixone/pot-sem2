@@ -23,7 +23,10 @@ namespace pot_sem2
         public MainWindow()
         {
             InitializeComponent();
-            new WCFPrototype().Run();
+            GameHost host = new pot_sem2.GameHost(new pot_sem2.Game(), "localhost", 8123);
+            host.Start();
+            GameClient client = new GameClient("localhost", 8123);
+            client.Start();
         }
 
         private void Refresh_Click(object sender, RoutedEventArgs e)
