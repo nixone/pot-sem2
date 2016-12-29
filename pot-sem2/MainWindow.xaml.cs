@@ -68,12 +68,12 @@ namespace pot_sem2
                     ClientStatus.Text = "Disconnected";
                 });
             };
+            client.OnNewState += (state, player) => {
+                Visualiser.Dispatcher.Invoke(() => {
+                    Visualiser.SetState(state);
+                });
+            };
             client.Start();
-        }
-
-        private void Refresh_Click(object sender, RoutedEventArgs e)
-        {
-            Visualiser.Refresh();
         }
     }
 }

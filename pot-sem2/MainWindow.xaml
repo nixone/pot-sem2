@@ -37,6 +37,5 @@
             <TextBlock Name="ClientStatus"></TextBlock>
         </WrapPanel>
         <local:GameStateVisualiser Grid.Row="2" Grid.Column="0"  x:Name="Visualiser"  />
-        <Button Grid.Row="2" Grid.Column="1" Click="Refresh_Click">Dont click me</Button>
     </Grid>
 </Window>

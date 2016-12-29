@@ -15,47 +15,19 @@ using System.Windows.Shapes;
 
 namespace pot_sem2
 {
-    /// <summary>
-    /// Follow steps 1a or 1b and then 2 to use this custom control in a XAML file.
-    ///
-    /// Step 1a) Using this custom control in a XAML file that exists in the current project.
-    /// Add this XmlNamespace attribute to the root element of the markup file where it is 
-    /// to be used:
-    ///
-    ///     xmlns:MyNamespace="clr-namespace:pot_sem2"
-    ///
-    ///
-    /// Step 1b) Using this custom control in a XAML file that exists in a different project.
-    /// Add this XmlNamespace attribute to the root element of the markup file where it is 
-    /// to be used:
-    ///
-    ///     xmlns:MyNamespace="clr-namespace:pot_sem2;assembly=pot_sem2"
-    ///
-    /// You will also need to add a project reference from the project where the XAML file lives
-    /// to this project and Rebuild to avoid compilation errors:
-    ///
-    ///     Right click on the target project in the Solution Explorer and
-    ///     "Add Reference"->"Projects"->[Browse to and select this project]
-    ///
-    ///
-    /// Step 2)
-    /// Go ahead and use your control in the XAML file.
-    ///
-    ///     <MyNamespace:CustomControl1/>
-    ///
-    /// </summary>
     public class GameStateVisualiser : Control
     {
-
         private Random random = new Random();
+        private GameState gameState = null;
 
         static GameStateVisualiser()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(GameStateVisualiser), new FrameworkPropertyMetadata(typeof(GameStateVisualiser)));
         }
 
-        public void Refresh()
+        public void SetState(GameState gameState)
         {
+            this.gameState = gameState;
             base.InvalidateVisual();
             base.InvalidateMeasure();
         }
@@ -77,16 +49,51 @@ namespace pot_sem2
 
                 drawingContext.PushTransform(new TranslateTransform(xOffset, yOffset));
                 DrawGame(drawingContext, DesiredSize.Width);
+                drawingContext.Pop();
             }
         }
 
         private void DrawGame(DrawingContext drawingContext, double renderSize)
         {
-            Point point = new Point(renderSize * random.NextDouble(), renderSize * random.NextDouble());
-            Pen pen = new Pen(Brushes.Black, 4);
-
-            drawingContext.DrawEllipse(null, pen, point, 20, 20);
+            Pen pen = new Pen(Brushes.Black, 2);
             drawingContext.DrawRectangle(null, pen, new Rect(new Point(0, 0), new Point(renderSize, renderSize)));
+            
+            if (gameState != null)
+            {
+                Boolean white = false;
+                for (int i=0; i<8; i++)
+                {
+                    for (int j=0; j<8; j++)
+                    {
+                        drawingContext.PushTransform(new TranslateTransform(i * (renderSize / 8), j * (renderSize / 8)));
+                        DrawField(drawingContext, gameState[i,j], renderSize / 8, white);
+                        drawingContext.Pop();
+                        white = !white;
+                    }
+                    white = !white;
+                }
+            }
+        }
+
+        private void DrawField(DrawingContext drawingContext, Field field, double renderSize, Boolean isWhite)
+        {
+            drawingContext.DrawRectangle(isWhite ? Brushes.LightGray : Brushes.Gray, null, new Rect(new Point(0, 0), new Point(renderSize, renderSize)));
+            
+            if (field.Player != Player.NONE && field.Figure != Figure.NONE)
+            {
+                Brush brush = field.Player == Player.WHITE ? Brushes.White : Brushes.Black;
+                Brush negativeBrush = field.Player == Player.WHITE ? Brushes.Black : Brushes.White;
+
+                if (field.Figure == Figure.MAN)
+                {
+                    drawingContext.DrawEllipse(brush, null, new Point(renderSize / 2, renderSize / 2), renderSize * 0.4, renderSize * 0.4);
+                    drawingContext.DrawEllipse(negativeBrush, null, new Point(renderSize / 2, renderSize / 2), renderSize * 0.2, renderSize * 0.2);
+                }
+                else
+                {
+                    drawingContext.DrawEllipse(brush, null, new Point(renderSize / 2, renderSize / 2), renderSize * 0.4, renderSize * 0.4);
+                }
+            }
         }
     }
 }
