@@ -109,7 +109,7 @@ namespace pot_sem2
                 Brush brush = field.Player == Player.WHITE ? Brushes.White : Brushes.Black;
                 Brush negativeBrush = field.Player == Player.WHITE ? Brushes.Black : Brushes.White;
 
-                if (field.Figure == Figure.MAN)
+                if (field.Figure == Figure.KING)
                 {
                     drawingContext.DrawEllipse(brush, null, new Point(renderSize / 2, renderSize / 2), renderSize * 0.4, renderSize * 0.4);
                     drawingContext.DrawEllipse(negativeBrush, null, new Point(renderSize / 2, renderSize / 2), renderSize * 0.2, renderSize * 0.2);
