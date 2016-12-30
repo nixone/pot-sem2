@@ -12,11 +12,13 @@ namespace pot_sem2
     {
         public delegate void ConnectedHandler();
         public delegate void DisconnectedHandler();
-        public delegate void NewStateHandler(GameState state, Player player);
+        public delegate void NewStateHandler(GameState state, Player player, String playerNameWhite, String playerNameBlack);
+        public delegate void NewPlayedGamesHandler(List<PlayedGame> playedGames);
 
         public event ConnectedHandler OnConnected;
         public event DisconnectedHandler OnDisconnected;
         public event NewStateHandler OnNewState;
+        public event NewPlayedGamesHandler OnNewPlayedGames;
 
         private Thread thread;
 
@@ -73,6 +75,15 @@ namespace pot_sem2
             service.FinishTurn(clientIndex);
         }
 
+        public void Record()
+        {
+            if (!running)
+            {
+                return;
+            }
+            service.Record();
+        }
+
         public void Run()
         {
             running = true;
@@ -94,10 +105,16 @@ namespace pot_sem2
                     {
                         GameState state = service.GetCurrentState();
                         Player player = service.GetPlayer(clientIndex);
+                        String whiteName = service.GetPlayerName(Player.WHITE);
+                        String blackName = service.GetPlayerName(Player.BLACK);
 
                         if (OnNewState != null)
                         {
-                            OnNewState(state, player);
+                            OnNewState(state, player, whiteName, blackName);
+                        }
+                        if (OnNewPlayedGames != null)
+                        {
+                            OnNewPlayedGames(service.GetPlayedGames());
                         }
                         Thread.Sleep(500);
                     }

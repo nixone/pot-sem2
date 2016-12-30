@@ -33,6 +33,16 @@ namespace pot_sem2
                     client.Select(x, y);
                 }
             };
+
+            List<PlayedGame> games = new List<PlayedGame>();
+            games.Add(new PlayedGame("nix", "ani", "ani", new List<GameState>()));
+            games.Add(new PlayedGame("ani", "nix", "ani", new List<GameState>()));
+            GamesList.ItemsSource = games;
+        }
+
+        private void GamesList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            Console.WriteLine(sender+" Clicked!");
         }
 
         private void ServerButtonClick(object sender, RoutedEventArgs e)
@@ -75,13 +85,30 @@ namespace pot_sem2
                     ClientStatus.Text = "Disconnected";
                 });
             };
-            client.OnNewState += (state, player) => {
+            client.OnNewState += (state, player, whiteName, blackName) => {
                 Visualiser.Dispatcher.Invoke(() => {
                     Visualiser.SetState(state);
-                    FinishTurnButton.IsEnabled = player != Player.NONE && state.PlayerOnTurn == player;
+                    FinishTurnButton.IsEnabled = player != Player.NONE && state.PlayerOnTurn == player && !state.IsFinished();
+                    StartNewGameButton.IsEnabled = state.IsFinished();
+                    RecordButton.IsEnabled = state.IsFinished();
+                    WhitePlayerName.Text = whiteName;
+                    BlackPlayerName.Text = blackName;
+                });
+            };
+            client.OnNewPlayedGames += (playedGames) => {
+                GamesList.Dispatcher.Invoke(() => {
+                    GamesList.ItemsSource = playedGames;
                 });
             };
             client.Start();
+        }
+
+        private void RecordClick(object sender, RoutedEventArgs e)
+        {
+            if (client != null)
+            {
+                client.Record();
+            }
         }
 
         private void FinishTurnClick(object sender, RoutedEventArgs e)

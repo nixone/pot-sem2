@@ -42,6 +42,18 @@ namespace pot_sem2
 
         [DataMember]
         public Boolean Selected = false;
+
+        public Field()
+        {
+
+        }
+
+        public Field(Field from)
+        {
+            Player = from.Player;
+            Figure = from.Figure;
+            Selected = from.Selected;
+        }
     }
 
     [DataContract]
@@ -52,6 +64,18 @@ namespace pot_sem2
         
         [DataMember]
         public Player PlayerOnTurn = Player.NONE;
+    
+        public GameState(GameState from)
+        {
+            PlayerOnTurn = from.PlayerOnTurn;
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    _board.Add(new pot_sem2.Field(from[i, j]));
+                }
+            }
+        }
 
         public GameState()
         {
@@ -63,19 +87,19 @@ namespace pot_sem2
                 }
             }
 
-            for (int i=0; i<4; i++)
+            for (int i=0; i<1; i++)
             {
                 this[i * 2, 0].Figure = Figure.MAN;
                 this[i * 2, 0].Player = Player.WHITE;
-
+                /*
                 this[i * 2 + 1, 1].Figure = Figure.MAN;
-                this[i * 2 + 1, 1].Player = Player.WHITE;
+                this[i * 2 + 1, 1].Player = Player.WHITE;*/
 
                 this[i * 2, 6].Figure = Figure.MAN;
                 this[i * 2, 6].Player = Player.BLACK;
-
+                /*
                 this[i * 2 + 1, 7].Figure = Figure.MAN;
-                this[i * 2 + 1, 7].Player = Player.BLACK;
+                this[i * 2 + 1, 7].Player = Player.BLACK;*/
             }
 
             PlayerOnTurn = Player.WHITE;
@@ -92,12 +116,48 @@ namespace pot_sem2
                 _board[8 * x + y] = value;
             }
         }
+
+        public Player GetWinner()
+        {
+            Boolean foundWhite = false;
+            Boolean foundBlack = false;
+
+            for (int i=0; i<8; i++)
+            {
+                for (int j=0; j<8; j++)
+                {
+                    if (this[i, j].Player == Player.WHITE)
+                    {
+                        foundWhite = true;
+                    }
+                    if (this[i, j].Player == Player.BLACK)
+                    {
+                        foundBlack = true;
+                    }
+                }
+            }
+
+            if (foundWhite && foundBlack)
+            {
+                return Player.NONE;
+            }
+            if (foundWhite)
+            {
+                return Player.WHITE;
+            }
+            return Player.BLACK;
+        }
+
+        public Boolean IsFinished()
+        {
+            return GetWinner() != Player.NONE;
+        }
     }
 
     
     public class Game
     {
-        private Random random = new Random();
+        private List<GameState> replay = new List<GameState>();
 
         private GameState state = new GameState();
 
@@ -105,9 +165,19 @@ namespace pot_sem2
         private Figure selectedFigure = Figure.NONE;
         private Boolean didFinishSelection = false;
 
+        public Game()
+        {
+            replay.Add(new GameState(state));
+        }
+
+        public List<GameState> GetReplay()
+        {
+            return new List<GameState>(replay);
+        }
+
         public GameState GetCurrentState()
         {
-            return state;
+            return new GameState(state);
         }
 
         public void Select(int x, int y, Player player)
@@ -310,6 +380,8 @@ namespace pot_sem2
             {
                 state.PlayerOnTurn = Player.WHITE;
             }
+
+            replay.Add(new GameState(state));
         }
     }
 }

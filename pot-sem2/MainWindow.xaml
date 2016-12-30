@@ -6,10 +6,11 @@
         xmlns:local="clr-namespace:pot_sem2"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -36,9 +37,33 @@
             <TextBlock> Status:</TextBlock>
             <TextBlock Name="ClientStatus"></TextBlock>
         </WrapPanel>
-        <WrapPanel Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+        <StackPanel Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <TextBlock Name="WhitePlayerName">-</TextBlock>
+            <TextBlock>vs</TextBlock>
+            <TextBlock Name="BlackPlayerName">-</TextBlock>
+            <Button Name="StartNewGameButton" IsEnabled="False">Start new game</Button>
+            <Button Name="RecordButton" IsEnabled="False" Click="RecordClick">Record</Button>
             <Button Name="FinishTurnButton" IsEnabled="False" Click="FinishTurnClick">Finish turn</Button>
-        </WrapPanel>
+            <TextBlock>Played games:</TextBlock>
+            <ListView Name="GamesList" HorizontalContentAlignment="Stretch">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <EventSetter Event="MouseDoubleClick" Handler="GamesList_MouseDoubleClick" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding WhitePlayerName}" />
+                            <TextBlock> vs </TextBlock>
+                            <TextBlock Text="{Binding BlackPlayerName}" />
+                            <TextBlock> Winner: </TextBlock>
+                            <TextBlock Text="{Binding WinnerName}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackPanel>
         <local:GameStateVisualiser Grid.Row="2" Grid.Column="0"  x:Name="Visualiser"  />
     </Grid>
 </Window>

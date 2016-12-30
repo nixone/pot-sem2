@@ -24,6 +24,18 @@ namespace pot_sem2
 
         [OperationContract]
         void FinishTurn(int clientIndex);
+
+        [OperationContract]
+        String GetPlayerName(Player player);
+
+        [OperationContract]
+        void StartNewGame();
+
+        [OperationContract]
+        void Record();
+
+        [OperationContract]
+        List<PlayedGame> GetPlayedGames();
     }
 
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
@@ -34,6 +46,9 @@ namespace pot_sem2
         private int nextClientIndex = 0;
 
         private String[] clientNames = new String[256];
+
+        // TODO Replace by database
+        private List<PlayedGame> playedGames = new List<PlayedGame>();
 
         public GameService()
         {
@@ -90,6 +105,34 @@ namespace pot_sem2
                 return;
             }
             game.FinishTurn(player);
+        }
+
+        public String GetPlayerName(Player player)
+        {
+            if (player == Player.NONE)
+            {
+                return "None";
+            }
+            return clientNames[player == Player.WHITE ? 0 : 1];
+        }
+
+        public void StartNewGame()
+        {
+            game = new Game();
+        }
+
+        public void Record()
+        {
+            if (game == null || !game.GetCurrentState().IsFinished())
+            {
+                return;
+            }
+            playedGames.Add(new PlayedGame(GetPlayerName(Player.WHITE), GetPlayerName(Player.BLACK), GetPlayerName(game.GetCurrentState().GetWinner()), game.GetReplay()));
+        }
+
+        public List<PlayedGame> GetPlayedGames()
+        {
+            return playedGames;
         }
     }
 }
