@@ -21,7 +21,7 @@ kedykoľvek prehrať (pozrieť replay).
 
 ## Architektúra
 
-Hra bola vypracovaná ako jeden celistvý projekt. Aj server aj client sú súčasťou toho istého projektu. Užívateľ nemusí spúšťať samostatnú aplikáciu pre 
+Hra bola vypracovaná ako jeden celistvý projekt. Aj server aj klient sú súčasťou toho istého projektu. Užívateľ nemusí spúšťať samostatnú aplikáciu pre 
 spustenie servera.
 
 Projekt je vrstvovo rozdelený na tri časti:
@@ -51,8 +51,6 @@ Takéto rozvrstvenie zaručí dostatočnú flexibilitu, ak by sa vo vývoji proj
 
 * **Problém so serializáciou série herných stavov**: Bolo potrebné riešiť problém, kedy štandardnou deserializáciou herných stavov vznikala iná postupnosť herných stavov ako tá, ktorá
 bola serializovaná. Po vymenení XML serializácie za DataContract serializáciu (ktorá sa natívne používa pri serializácii objektov pri WCF) sa problém prestal vyskytovať. 
-
-* **Problém so serializáciou kolekcií definovanými rozhraniami do XML**: Bolo potrebné vytvoriť vlastnú implementáciu pre serializáciu generických kolekcií, konkrétne množín (HashSet), ktorých generický typ je definovaný iba rozhraním. Takýto use-case nie je naimplementovaný v základnej implementácii triedy XmlSerializer.
 
 ## Záver
 
