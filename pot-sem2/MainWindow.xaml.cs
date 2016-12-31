@@ -33,16 +33,17 @@ namespace pot_sem2
                     client.Select(x, y);
                 }
             };
-
-            List<PlayedGame> games = new List<PlayedGame>();
-            games.Add(new PlayedGame("nix", "ani", "ani", new List<GameState>()));
-            games.Add(new PlayedGame("ani", "nix", "ani", new List<GameState>()));
-            GamesList.ItemsSource = games;
         }
 
         private void GamesList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            Console.WriteLine(sender+" Clicked!");
+            Console.WriteLine(sender);
+            ListViewItem item = sender as ListViewItem;
+            PlayedGame playedGame = item.DataContext as PlayedGame;
+            Console.WriteLine(playedGame);
+            ReplayWindow window = new ReplayWindow(playedGame);
+            window.Show();
+            window.StartReplay();
         }
 
         private void ServerButtonClick(object sender, RoutedEventArgs e)
