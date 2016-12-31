@@ -37,10 +37,8 @@ namespace pot_sem2
 
         private void GamesList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            Console.WriteLine(sender);
             ListViewItem item = sender as ListViewItem;
             PlayedGame playedGame = item.DataContext as PlayedGame;
-            Console.WriteLine(playedGame);
             ReplayWindow window = new ReplayWindow(playedGame);
             window.Show();
             window.StartReplay();

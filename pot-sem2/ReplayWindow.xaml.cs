@@ -28,6 +28,7 @@ namespace pot_sem2
             InitializeComponent();
             this.playedGame = playedGame;
             thread = new Thread(RunThread);
+            thread.IsBackground = true;
         }
 
         public void StartReplay()
@@ -37,7 +38,7 @@ namespace pot_sem2
 
         public void RunThread()
         {
-            foreach (GameState state in playedGame.Replay)
+            foreach (GameState state in playedGame.GetReplay())
             {
                 Visualiser.Dispatcher.Invoke(() => {
                     Visualiser.SetState(state);

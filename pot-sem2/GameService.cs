@@ -47,12 +47,24 @@ namespace pot_sem2
 
         private String[] clientNames = new String[256];
 
-        // TODO Replace by database
         private List<PlayedGame> playedGames = new List<PlayedGame>();
 
         public GameService()
         {
             game = new pot_sem2.Game();
+            RefreshPlayedGames();
+        }
+
+        private void RefreshPlayedGames()
+        {
+            playedGames.Clear();
+            using (var db = new PlayedGameContext())
+            {
+                foreach (PlayedGame played in db.PlayedGames)
+                {
+                    playedGames.Add(played);
+                }
+            }
         }
 
         public GameState GetCurrentState()
@@ -127,7 +139,12 @@ namespace pot_sem2
             {
                 return;
             }
-            playedGames.Add(new PlayedGame(GetPlayerName(Player.WHITE), GetPlayerName(Player.BLACK), GetPlayerName(game.GetCurrentState().GetWinner()), game.GetReplay()));
+            using(var db = new PlayedGameContext())
+            {
+                db.PlayedGames.Add(new PlayedGame(GetPlayerName(Player.WHITE), GetPlayerName(Player.BLACK), GetPlayerName(game.GetCurrentState().GetWinner()), game.GetReplay()));
+                db.SaveChanges();
+            }
+            RefreshPlayedGames();
         }
 
         public List<PlayedGame> GetPlayedGames()

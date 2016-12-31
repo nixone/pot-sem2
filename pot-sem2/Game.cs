@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.ServiceModel;
@@ -10,6 +12,7 @@ namespace pot_sem2
 {
 
     [DataContract(Name ="Figure")]
+    [Serializable]
     public enum Figure
     {
         [EnumMember]
@@ -21,6 +24,7 @@ namespace pot_sem2
     }
 
     [DataContract(Name = "Player")]
+    [Serializable]
     public enum Player
     {
         [EnumMember]
@@ -32,6 +36,7 @@ namespace pot_sem2
     }
 
     [DataContract]
+    [Serializable]
     public class Field
     {
         [DataMember]
@@ -57,6 +62,7 @@ namespace pot_sem2
     }
 
     [DataContract]
+    [Serializable]
     public class GameState
     {
         [DataMember]
@@ -151,6 +157,20 @@ namespace pot_sem2
         public Boolean IsFinished()
         {
             return GetWinner() != Player.NONE;
+        }
+
+        public override String ToString()
+        {
+            String output = "";
+            for (int i=0; i<8; i++)
+            {
+                for (int j=0; j<8; j++)
+                {
+                    output += this[i, j].Player + ":" + this[i, j].Figure + "  ";
+                }
+                output += "\n";
+            }
+            return output;
         }
     }
 
