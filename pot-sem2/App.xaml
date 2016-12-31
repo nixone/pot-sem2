@@ -4,6 +4,15 @@
              xmlns:local="clr-namespace:pot_sem2"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <Style TargetType="{x:Type TextBox}">
+            <Setter Property="Padding" Value="2" />
+            <Setter Property="Margin" Value="2"/>
+        </Style>
+        <Style TargetType="{x:Type TextBlock}">
+            <Setter Property="Padding" Value="4" />
+        </Style>
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="Margin" Value="2" />
+        </Style>
     </Application.Resources>
 </Application>

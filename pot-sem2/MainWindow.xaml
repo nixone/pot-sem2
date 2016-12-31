@@ -5,45 +5,59 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:pot_sem2"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="Game of draughts" Height="500" Width="725">
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <WrapPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
-            <TextBlock>Server --- </TextBlock>
-            <TextBlock> Port: </TextBlock>
-            <TextBox Name="ServerPort">8123</TextBox>
-            <Button Click="ServerButtonClick">Host</Button>
-            <TextBlock> Status: </TextBlock>
-            <TextBlock Name="ServerStatus"></TextBlock>
-        </WrapPanel>
-        <WrapPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
-            <TextBlock>Client --- </TextBlock>
-            <TextBlock>Name: </TextBlock>
-            <TextBox Name="ClientName">name</TextBox>
-            <TextBlock>Address:</TextBlock>
-            <TextBox Name="ClientAddress">localhost</TextBox>
-            <TextBlock> Port:</TextBlock>
-            <TextBox Name="ClientPort">8123</TextBox>
-            <Button Click="ClientButtonClick">Connect</Button>
-            <TextBlock> Status:</TextBlock>
-            <TextBlock Name="ClientStatus"></TextBlock>
-        </WrapPanel>
-        <StackPanel Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+
+        <TextBlock Grid.Row="0" Grid.Column="0" FontWeight="Bold">Server</TextBlock>
+        <TextBlock Grid.Row="0" Grid.Column="4">Port:</TextBlock>
+        <TextBox Grid.Row="0" Grid.Column="5" Name="ServerPort">8123</TextBox>
+        <Button Grid.Row="0" Grid.Column="6" Click="ServerButtonClick">Host</Button>
+        <TextBlock Grid.Row="0" Grid.Column="7"> Status:</TextBlock>
+        <TextBlock Grid.Row="0" Grid.Column="8" Name="ServerStatus"></TextBlock>
+
+        <TextBlock Grid.Row="1" Grid.Column="0" FontWeight="Bold">Client</TextBlock>
+        <TextBox Grid.Row="1" Grid.Column="1" Name="ClientName">player name</TextBox>
+        <TextBlock Grid.Row="1" Grid.Column="2">Address:</TextBlock>
+        <TextBox Grid.Row="1" Grid.Column="3" Name="ClientAddress">localhost</TextBox>
+        <TextBlock Grid.Row="1" Grid.Column="4">Port:</TextBlock>
+        <TextBox Grid.Row="1" Grid.Column="5" Name="ClientPort">8123</TextBox>
+        <Button Grid.Row="1" Grid.Column="6" Click="ClientButtonClick">Connect</Button>
+        <TextBlock Grid.Row="1" Grid.Column="7">Status:</TextBlock>
+        <TextBlock Grid.Row="1" Grid.Column="8" Name="ClientStatus"></TextBlock>
+
+        <local:GameStateVisualiser Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="9" x:Name="Visualiser"  />
+        
+        <WrapPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="10">
             <TextBlock Name="WhitePlayerName">-</TextBlock>
             <TextBlock>vs</TextBlock>
             <TextBlock Name="BlackPlayerName">-</TextBlock>
-            <Button Name="StartNewGameButton" IsEnabled="False">Start new game</Button>
+            <Button Name="StartNewGameButton" IsEnabled="False" Click="StartNewGameClick">Start new game</Button>
             <Button Name="RecordButton" IsEnabled="False" Click="RecordClick">Record</Button>
-            <Button Name="FinishTurnButton" IsEnabled="False" Click="FinishTurnClick">Finish turn</Button>
+            <Button Name="FinishTurnButton" IsEnabled="False" Click="FinishTurnClick" FontWeight="Bold">Finish turn</Button>
+        </WrapPanel>
+
+        <StackPanel Grid.Row="2" Grid.Column="10">
             <TextBlock>Played games:</TextBlock>
             <ListView Name="GamesList" HorizontalContentAlignment="Stretch">
                 <ListView.ItemContainerStyle>
@@ -54,16 +68,15 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding WhitePlayerName}" />
-                            <TextBlock> vs </TextBlock>
-                            <TextBlock Text="{Binding BlackPlayerName}" />
-                            <TextBlock> Winner: </TextBlock>
+                            <TextBlock Text="{Binding WhitePlayerName}" FontWeight="Bold" />
+                            <TextBlock> vs</TextBlock>
+                            <TextBlock Text="{Binding BlackPlayerName}" FontWeight="Bold" />
+                            <TextBlock> Winner:</TextBlock>
                             <TextBlock Text="{Binding WinnerName}" />
                         </StackPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
         </StackPanel>
-        <local:GameStateVisualiser Grid.Row="2" Grid.Column="0"  x:Name="Visualiser"  />
     </Grid>
 </Window>

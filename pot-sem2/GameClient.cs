@@ -114,7 +114,7 @@ namespace pot_sem2
         }
 
         /// <summary>
-        /// Triggers a server to store a currently finished game and waits until the server returns.
+        /// Triggers a server to store a currently finished game and waits until the server returns
         /// </summary>
         public void Record()
         {
@@ -123,6 +123,18 @@ namespace pot_sem2
                 return;
             }
             service.Record();
+        }
+
+        /// <summary>
+        /// Triggers a server to start a new game and waits until the server returns
+        /// </summary>
+        public void StartNewGame()
+        {
+            if (!running)
+            {
+                return;
+            }
+            service.StartNewGame();
         }
 
         /// <summary>

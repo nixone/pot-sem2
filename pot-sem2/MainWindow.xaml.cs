@@ -120,5 +120,13 @@ namespace pot_sem2
                 client.FinishTurn();
             }
         }
+
+        private void StartNewGameClick(object sender, RoutedEventArgs e)
+        {
+            if (client != null)
+            {
+                client.StartNewGame();
+            }
+        }
     }
 }

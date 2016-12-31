@@ -134,19 +134,19 @@ namespace pot_sem2
                 }
             }
 
-            for (int i=0; i<1; i++)
+            for (int i=0; i<4; i++)
             {
                 this[i * 2, 0].Figure = Figure.MAN;
                 this[i * 2, 0].Player = Player.WHITE;
-                /*
+                
                 this[i * 2 + 1, 1].Figure = Figure.MAN;
-                this[i * 2 + 1, 1].Player = Player.WHITE;*/
+                this[i * 2 + 1, 1].Player = Player.WHITE;
 
                 this[i * 2, 6].Figure = Figure.MAN;
                 this[i * 2, 6].Player = Player.BLACK;
-                /*
+                
                 this[i * 2 + 1, 7].Figure = Figure.MAN;
-                this[i * 2 + 1, 7].Player = Player.BLACK;*/
+                this[i * 2 + 1, 7].Player = Player.BLACK;
             }
 
             PlayerOnTurn = Player.WHITE;
