@@ -10,7 +10,9 @@ using System.Threading.Tasks;
 
 namespace pot_sem2
 {
-
+    /// <summary>
+    /// Kind of figure on the board
+    /// </summary>
     [DataContract(Name ="Figure")]
     [Serializable]
     public enum Figure
@@ -23,6 +25,9 @@ namespace pot_sem2
         NONE
     }
 
+    /// <summary>
+    /// Kind of player on the board
+    /// </summary>
     [DataContract(Name = "Player")]
     [Serializable]
     public enum Player
@@ -35,24 +40,42 @@ namespace pot_sem2
         NONE
     }
 
+    /// <summary>
+    /// Representation of one field on the board
+    /// </summary>
     [DataContract]
     [Serializable]
     public class Field
     {
+        /// <summary>
+        /// Player occupying this field
+        /// </summary>
         [DataMember]
         public Player Player = Player.NONE;
 
+        /// <summary>
+        /// Figure occupying this field
+        /// </summary>
         [DataMember]
         public Figure Figure = Figure.NONE;
 
+        /// <summary>
+        /// If this field is selected by somebody
+        /// </summary>
         [DataMember]
         public Boolean Selected = false;
 
+        /// <summary>
+        /// Empty required constructor
+        /// </summary>
         public Field()
         {
-
         }
 
+        /// <summary>
+        /// Copy constructor
+        /// </summary>
+        /// <param name="from"></param>
         public Field(Field from)
         {
             Player = from.Player;
@@ -61,16 +84,30 @@ namespace pot_sem2
         }
     }
 
+    /// <summary>
+    /// Representation of a single state of game at certain time, game as seen as replay for example is seen
+    /// as list of game states.
+    /// </summary>
     [DataContract]
     [Serializable]
     public class GameState
     {
+        /// <summary>
+        /// List of 64 fields of the board.
+        /// </summary>
         [DataMember]
         public List<Field> _board = new List<Field>();
         
+        /// <summary>
+        /// Player whos turn it is.
+        /// </summary>
         [DataMember]
         public Player PlayerOnTurn = Player.NONE;
     
+        /// <summary>
+        /// Copy constructor
+        /// </summary>
+        /// <param name="from"></param>
         public GameState(GameState from)
         {
             PlayerOnTurn = from.PlayerOnTurn;
@@ -83,6 +120,10 @@ namespace pot_sem2
             }
         }
 
+        /// <summary>
+        /// Initial game state constructor. This constructor also ensures the initial figure and player state
+        /// for usual game of draughts.
+        /// </summary>
         public GameState()
         {
             for (int i=0; i<8; i++)
@@ -111,6 +152,12 @@ namespace pot_sem2
             PlayerOnTurn = Player.WHITE;
         }
 
+        /// <summary>
+        /// Operator allowing access to specific board field.
+        /// </summary>
+        /// <param name="x">column</param>
+        /// <param name="y">row</param>
+        /// <returns>requested field</returns>
         public Field this[int x, int y]
         {
             get
@@ -123,6 +170,10 @@ namespace pot_sem2
             }
         }
 
+        /// <summary>
+        /// Figures out the winner of the current game state
+        /// </summary>
+        /// <returns>Player.NONE if nobody won, or the winner player</returns>
         public Player GetWinner()
         {
             Boolean foundWhite = false;
@@ -154,27 +205,19 @@ namespace pot_sem2
             return Player.BLACK;
         }
 
+        /// <summary>
+        /// Figures out if the game state represents a finished game
+        /// </summary>
+        /// <returns></returns>
         public Boolean IsFinished()
         {
             return GetWinner() != Player.NONE;
         }
-
-        public override String ToString()
-        {
-            String output = "";
-            for (int i=0; i<8; i++)
-            {
-                for (int j=0; j<8; j++)
-                {
-                    output += this[i, j].Player + ":" + this[i, j].Figure + "  ";
-                }
-                output += "\n";
-            }
-            return output;
-        }
     }
 
-    
+    /// <summary>
+    /// Current progress of game, is used for simulation purposes and for interacting with game states.
+    /// </summary>
     public class Game
     {
         private List<GameState> replay = new List<GameState>();
@@ -185,21 +228,39 @@ namespace pot_sem2
         private Figure selectedFigure = Figure.NONE;
         private Boolean didFinishSelection = false;
 
+        /// <summary>
+        /// Creates a default game
+        /// </summary>
         public Game()
         {
             replay.Add(new GameState(state));
         }
 
+        /// <summary>
+        /// Gets a replay up until current point of the game.
+        /// </summary>
+        /// <returns>replay as list of GameStates</returns>
         public List<GameState> GetReplay()
         {
             return new List<GameState>(replay);
         }
 
+        /// <summary>
+        /// Gets a current state of the game 
+        /// </summary>
+        /// <returns>current state of the game</returns>
         public GameState GetCurrentState()
         {
             return new GameState(state);
         }
 
+        /// <summary>
+        /// Selecting a field [x, y] as a player. This operation will either change a current game state 
+        /// or leave it unchanged. Method call is not returning validity of the selection itself.
+        /// </summary>
+        /// <param name="x">column</param>
+        /// <param name="y">row</param>
+        /// <param name="player">player making selection</param>
         public void Select(int x, int y, Player player)
         {
             if (player != state.PlayerOnTurn)
@@ -336,6 +397,11 @@ namespace pot_sem2
             state[x, y].Selected = true;
         }
 
+        /// <summary>
+        /// Method for finishing a turn with preious selection. Also, as selection, this
+        /// method either changes a current state or not, not throwing exceptions or return values.
+        /// </summary>
+        /// <param name="player">player we are finishing a turn for</param>
         public void FinishTurn(Player player)
         {
             if (player != state.PlayerOnTurn)

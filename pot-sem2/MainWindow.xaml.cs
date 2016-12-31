@@ -22,7 +22,10 @@ namespace pot_sem2
     {
         private GameHost host;
         private GameClient client;
-
+        
+        /// <summary>
+        /// Creates the window and sets the callbacks
+        /// </summary>
         public MainWindow()
         {
             InitializeComponent();

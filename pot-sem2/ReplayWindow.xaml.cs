@@ -16,13 +16,17 @@ using System.Windows.Shapes;
 namespace pot_sem2
 {
     /// <summary>
-    /// Interaction logic for ReplayWidow.xaml
+    /// Interaction logic for replay window
     /// </summary>
     public partial class ReplayWindow : Window
     {
         private PlayedGame playedGame;
         private Thread thread;
 
+        /// <summary>
+        /// Creates the window with a specific played game record
+        /// </summary>
+        /// <param name="playedGame"></param>
         public ReplayWindow(PlayedGame playedGame)
         {
             InitializeComponent();
@@ -31,6 +35,9 @@ namespace pot_sem2
             thread.IsBackground = true;
         }
 
+        /// <summary>
+        /// Asynchronously starts the replay
+        /// </summary>
         public void StartReplay()
         {
             thread.Start();

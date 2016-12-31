@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace pot_sem2
 {
+    /// <summary>
+    /// Representing a client connected to some game host
+    /// </summary>
     public class GameClient
     {
         public delegate void ConnectedHandler();
@@ -15,9 +18,24 @@ namespace pot_sem2
         public delegate void NewStateHandler(GameState state, Player player, String playerNameWhite, String playerNameBlack);
         public delegate void NewPlayedGamesHandler(List<PlayedGame> playedGames);
 
+        /// <summary>
+        /// Called when client is succesfully connected to host
+        /// </summary>
         public event ConnectedHandler OnConnected;
+
+        /// <summary>
+        /// Called whenever client is disconnected (for many reasons)
+        /// </summary>
         public event DisconnectedHandler OnDisconnected;
+
+        /// <summary>
+        /// Called when new game state is observed, somewhere between being connected and disconnected
+        /// </summary>
         public event NewStateHandler OnNewState;
+
+        /// <summary>
+        /// Called when new played games list is observed, somewhere between being connected and disconnected
+        /// </summary>
         public event NewPlayedGamesHandler OnNewPlayedGames;
 
         private Thread thread;
@@ -29,6 +47,12 @@ namespace pot_sem2
         private int clientIndex;
         private IGameService service = null;
 
+        /// <summary>
+        /// Creates a client and pre-configures it, but doesn't connect it yet.
+        /// </summary>
+        /// <param name="name">name of player</param>
+        /// <param name="address">address to connect to (ip or dns)</param>
+        /// <param name="port">port to connect to</param>
         public GameClient(String name, String address, int port)
         {
             this.name = name;
@@ -38,6 +62,9 @@ namespace pot_sem2
             thread.IsBackground = true;
         }
 
+        /// <summary>
+        /// Starts the client, after this point we can expect events any time
+        /// </summary>
         public void Start()
         {
             if (running)
@@ -47,6 +74,9 @@ namespace pot_sem2
             thread.Start();
         }
 
+        /// <summary>
+        /// Stops the client and waits for the client to stop until this method returns.
+        /// </summary>
         public void Stop()
         {
             if (!running)
@@ -57,6 +87,11 @@ namespace pot_sem2
             thread.Join();
         }
 
+        /// <summary>
+        /// Invokes selection of specific tile and waits until the server returns.
+        /// </summary>
+        /// <param name="x">column</param>
+        /// <param name="y">row</param>
         public void Select(int x, int y)
         {
             if (!running)
@@ -66,6 +101,9 @@ namespace pot_sem2
             service.Select(x, y, clientIndex);
         }
 
+        /// <summary>
+        /// Finished the turn and waits until the server returns.
+        /// </summary>
         public void FinishTurn()
         {
             if (!running)
@@ -75,6 +113,9 @@ namespace pot_sem2
             service.FinishTurn(clientIndex);
         }
 
+        /// <summary>
+        /// Triggers a server to store a currently finished game and waits until the server returns.
+        /// </summary>
         public void Record()
         {
             if (!running)
@@ -84,6 +125,9 @@ namespace pot_sem2
             service.Record();
         }
 
+        /// <summary>
+        /// Main method that runs the client, periodically checks the new state of game and triggers necessary events.
+        /// </summary>
         public void Run()
         {
             running = true;

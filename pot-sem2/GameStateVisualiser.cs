@@ -15,10 +15,16 @@ using System.Windows.Shapes;
 
 namespace pot_sem2
 {
+    /// <summary>
+    /// Visualisation component for GameState-s
+    /// </summary>
     public class GameStateVisualiser : Control
     {
         public delegate void TileSelected(int x, int y);
 
+        /// <summary>
+        /// Called when tile is selected, clicked from user interface
+        /// </summary>
         public event TileSelected OnTileSelected;
 
         private Random random = new Random();
@@ -29,6 +35,10 @@ namespace pot_sem2
             DefaultStyleKeyProperty.OverrideMetadata(typeof(GameStateVisualiser), new FrameworkPropertyMetadata(typeof(GameStateVisualiser)));
         }
 
+        /// <summary>
+        /// Sets a new game state to display and sets the control to refresh itself
+        /// </summary>
+        /// <param name="gameState">game state</param>
         public void SetState(GameState gameState)
         {
             this.gameState = gameState;
@@ -36,12 +46,21 @@ namespace pot_sem2
             base.InvalidateMeasure();
         }
 
+        /// <summary>
+        /// Discovers the size constraints and sets the component size to be square as big as possible
+        /// </summary>
+        /// <param name="constraint">outer size constraint</param>
+        /// <returns>square size of component</returns>
         protected override Size MeasureOverride(Size constraint)
         {
             double size = Math.Min(constraint.Width, constraint.Height);
             return new Size(size, size);
         }
 
+        /// <summary>
+        /// Handles the click on the board and invokes events if necessary
+        /// </summary>
+        /// <param name="e">event details</param>
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
             base.OnMouseDown(e);
@@ -63,6 +82,10 @@ namespace pot_sem2
             }
         }
 
+        /// <summary>
+        /// Renders the component
+        /// </summary>
+        /// <param name="drawingContext">drawing object</param>
         protected override void OnRender(DrawingContext drawingContext)
         {
             base.OnRender(drawingContext);
@@ -78,6 +101,11 @@ namespace pot_sem2
             }
         }
 
+        /// <summary>
+        /// Renders the board in centered place
+        /// </summary>
+        /// <param name="drawingContext">drawing object</param>
+        /// <param name="renderSize">size of the board to render</param>
         private void DrawGame(DrawingContext drawingContext, double renderSize)
         {
             Pen pen = new Pen(Brushes.Black, 2);
@@ -100,6 +128,13 @@ namespace pot_sem2
             }
         }
 
+        /// <summary>
+        /// Renders the field in a place
+        /// </summary>
+        /// <param name="drawingContext">drawing object</param>
+        /// <param name="field">field to draw</param>
+        /// <param name="renderSize">how big the field should be rendered</param>
+        /// <param name="isWhite">is the background of the field white or black</param>
         private void DrawField(DrawingContext drawingContext, Field field, double renderSize, Boolean isWhite)
         {
             drawingContext.DrawRectangle(isWhite ? Brushes.LightGray : Brushes.Gray, null, new Rect(new Point(0, 0), new Point(renderSize, renderSize)));
@@ -122,7 +157,7 @@ namespace pot_sem2
 
             if (field.Selected)
             {
-                drawingContext.DrawRectangle(null, new Pen(Brushes.Red, 3), new Rect(new Point(0, 0), new Point(renderSize, renderSize)));
+                drawingContext.DrawRectangle(null, new Pen(Brushes.Red, 3), new Rect(new Point(0.1*renderSize, 0.1*renderSize), new Point(renderSize*0.9, renderSize*0.9)));
             }
         }
     }

@@ -7,37 +7,82 @@ using System.Threading.Tasks;
 
 namespace pot_sem2
 {
+    /// <summary>
+    /// Abstract description of communication between client and host.
+    /// </summary>
     [ServiceContract]
     public interface IGameService
     {
+        /// <summary>
+        /// Retrieves the current state of the game
+        /// </summary>
+        /// <returns></returns>
         [OperationContract]
         GameState GetCurrentState();
 
+        /// <summary>
+        /// Allocates new index for a client, it is expected that every client calls this endpoint just once
+        /// </summary>
+        /// <param name="name">player name</param>
+        /// <returns>identification index</returns>
         [OperationContract]
         int ObtainClientIndex(String name);
 
+        /// <summary>
+        /// Retrieves the player information about a specific client
+        /// </summary>
+        /// <param name="clientIndex">index of client</param>
+        /// <returns>player information, WHITE / BLACK / NONE</returns>
         [OperationContract]
         Player GetPlayer(int clientIndex);
 
+        /// <summary>
+        /// Sends a selection command to the game
+        /// </summary>
+        /// <param name="x">board column</param>
+        /// <param name="y">board row</param>
+        /// <param name="clientIndex">client index</param>
         [OperationContract]
         void Select(int x, int y, int clientIndex);
 
+        /// <summary>
+        /// Sends a finish-turn command to the game
+        /// </summary>
+        /// <param name="clientIndex">client index</param>
         [OperationContract]
         void FinishTurn(int clientIndex);
 
+        /// <summary>
+        /// Retrieves a player name for a specific player
+        /// </summary>
+        /// <param name="player">player</param>
+        /// <returns>player name</returns>
         [OperationContract]
         String GetPlayerName(Player player);
 
+        /// <summary>
+        /// Sends a command to start a new game after the one was finished
+        /// </summary>
         [OperationContract]
         void StartNewGame();
 
+        /// <summary>
+        /// Sends a command to record the current state of the game to played games
+        /// </summary>
         [OperationContract]
         void Record();
 
+        /// <summary>
+        /// Retrieves all the played games from database
+        /// </summary>
+        /// <returns></returns>
         [OperationContract]
         List<PlayedGame> GetPlayedGames();
     }
 
+    /// <summary>
+    /// Specific implementation of communication on host side
+    /// </summary>
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class GameService : IGameService
     {
@@ -49,12 +94,15 @@ namespace pot_sem2
 
         private List<PlayedGame> playedGames = new List<PlayedGame>();
 
+        /// <summary>
+        /// Creates a basic service with default game and refreshes the played games from database
+        /// </summary>
         public GameService()
         {
             game = new pot_sem2.Game();
             RefreshPlayedGames();
         }
-
+        
         private void RefreshPlayedGames()
         {
             playedGames.Clear();
